@@ -1,208 +1,245 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
+    <!-- تقييد صارم للأبعاد لمنع تكبير الشاشة (الزوم العشوائي) -->
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>مساعد زيد الذكي</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, viewport-fit=cover">
+    <title>تطبيق زيد التعليمي | فريق النخبة</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f0f2f5;
-            --text-color: #1c1c1e;
-            --card-bg: #ffffff;
-            --primary-color: #248bcf;
-            --bubble-user: #248bcf;
-            --bubble-bot: #ffffff;
-            --border-color: #e5e5ea;
+            /* ألوان احترافية مستوحاة من الحداثة والهوية البصرية */
+            --primary: #1a73e8;
+            --primary-dark: #1557b0;
+            --accent: #ff9800;
+            --bg-main: #f4f7f9;
+            --bg-card: #ffffff;
+            --text-main: #202124;
+            --text-muted: #5f6368;
+            --border: #e0e0e0;
+            --shadow: 0 4px 12px rgba(0,0,0,0.05);
+            --radius: 16px;
         }
-        body.tg {
-            --bg-color: var(--tg-theme-bg-color, #f0f2f5);
-            --text-color: var(--tg-theme-text-color, #1c1c1e);
-            --card-bg: var(--tg-theme-secondary-bg-color, #ffffff);
-            --primary-color: var(--tg-theme-button-color, #248bcf);
-            --bubble-user: var(--tg-theme-button-color, #248bcf);
-            --bubble-bot: var(--tg-theme-bg-color, #ffffff);
-        }
-        * { box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            /* حل مشكلة القص نهائياً باستخدام الأبعاد الديناميكية ومتغيرات التليجرام */
-            height: 100dvh;
-            height: var(--tg-viewport-height, 100dvh);
-            overflow: hidden;
-        }
-        
-        /* هيدر محمي من التداخل العلوي */
-        .app-header {
-            background: var(--card-bg);
-            padding: 12px 16px;
-            padding-top: calc(12px + env(safe-area-inset-top));
-            text-align: center;
-            border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 1px 5px rgba(0,0,0,0.03);
-            flex-shrink: 0;
-        }
-        .app-header h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--primary-color); }
-        .app-header p { margin: 3px 0 0 0; font-size: 11px; opacity: 0.6; }
 
-        /* منطقة الشات مرنة وتتطابق مع المساحة المتبقية */
-        .chat-area {
-            flex: 1;
-            padding: 16px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: var(--bg-color);
+        /* تكيف تلقائي مع ثيم تليجرام الليلي والنهاري */
+        body.tg-dark {
+            --primary: #8ab4f8;
+            --primary-dark: #aecbfa;
+            --accent: #fbbc04;
+            --bg-main: #202124;
+            --bg-card: #292a2d;
+            --text-main: #e8eaed;
+            --text-muted: #9aa0a6;
+            --border: #3c4043;
+            --shadow: 0 4px 12px rgba(0,0,0,0.2);
         }
-        .msg {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            font-size: 15px;
-            line-height: 1.5;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            word-wrap: break-word;
-            white-space: pre-line;
-            animation: fadeIn 0.2s ease-out;
-        }
-        .user-msg {
-            background: var(--bubble-user);
-            color: #ffffff;
-            align-self: flex-start;
-            border-bottom-right-radius: 4px;
-        }
-        .bot-msg {
-            background: var(--bubble-bot);
-            color: var(--text-color);
-            align-self: flex-end;
-            border-bottom-left-radius: 4px;
-            border: 1px solid rgba(0,0,0,0.08);
-        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         
-        /* بار سفلي ثابت ومحمي من الاختفاء تحت أزرار النظام */
-        .input-bar {
-            background: var(--card-bg);
-            padding: 10px 14px;
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            border-top: 1px solid var(--border-color);
-            padding-bottom: calc(10px + env(safe-area-inset-bottom));
-            flex-shrink: 0;
+        body {
+            background-color: var(--bg-main); color: var(--text-main);
+            margin: 0; padding: 0; display: flex; flex-direction: column;
+            height: 100vh; height: -webkit-fill-available; overflow: hidden;
+            font-size: 14px; /* تثبيت حجم الخط لمنع الشاشة الكبيرة */
         }
-        .input-bar input {
-            flex: 1;
-            padding: 10px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            background: var(--bg-color);
-            color: var(--text-color);
-            font-size: 15px;
-            outline: none;
+
+        /* الهيدر العلوي */
+        .header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; padding: 15px 20px; text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1); z-index: 10;
+            border-bottom-left-radius: 20px; border-bottom-right-radius: 20px;
         }
-        .input-bar button {
-            background: var(--primary-color);
-            color: #ffffff;
-            border: none;
-            padding: 10px 18px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
+        .header h2 { margin: 0; font-size: 1.2rem; font-weight: bold; letter-spacing: 0.5px; }
+        .header p { margin: 5px 0 0; font-size: 0.8rem; opacity: 0.9; }
+
+        /* منطقة المحتوى الرئيسية */
+        .content-area {
+            flex: 1; overflow-y: auto; padding: 15px; position: relative;
+            display: flex; flex-direction: column; scroll-behavior: smooth;
         }
-        .loading-dots { font-style: italic; opacity: 0.6; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* حاويات التبويبات */
+        .tab-content { display: none; flex-direction: column; height: 100%; animation: fadeEffect 0.3s; }
+        .tab-content.active { display: flex; }
+        @keyframes fadeEffect { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- تصميم شاشة الدردشة --- */
+        .chat-box { flex: 1; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding-bottom: 10px; }
+        .msg { max-width: 85%; padding: 12px 16px; border-radius: var(--radius); font-size: 0.95rem; line-height: 1.6; word-wrap: break-word; position: relative; }
+        .bot-msg { background: var(--bg-card); border: 1px solid var(--border); border-bottom-right-radius: 4px; align-self: flex-start; box-shadow: var(--shadow); }
+        .user-msg { background: var(--primary); color: white; border-bottom-left-radius: 4px; align-self: flex-end; box-shadow: 0 3px 8px rgba(26,115,232,0.3); }
+        
+        .chat-input-container {
+            display: flex; gap: 8px; margin-top: 10px;
+            background: var(--bg-card); padding: 8px; border-radius: 25px; box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+        .chat-input-container input {
+            flex: 1; border: none; background: transparent; padding: 10px 15px;
+            color: var(--text-main); font-size: 0.95rem; outline: none;
+        }
+        .chat-input-container button {
+            background: var(--primary); color: white; border: none; border-radius: 50%;
+            width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s;
+        }
+        .chat-input-container button:active { transform: scale(0.9); }
+
+        /* --- تصميم حاسبة الدرجات --- */
+        .calc-card { background: var(--bg-card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 15px; }
+        .calc-card h3 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--bg-main); padding-bottom: 10px; }
+        .input-group { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .input-group label { font-weight: bold; color: var(--text-main); }
+        .input-group input {
+            width: 80px; padding: 8px; border-radius: 8px; border: 1px solid var(--border);
+            text-align: center; font-weight: bold; background: var(--bg-main); color: var(--text-main);
+        }
+        .calc-btn {
+            width: 100%; padding: 12px; background: var(--accent); color: #fff; border: none;
+            border-radius: var(--radius); font-size: 1rem; font-weight: bold; cursor: pointer; margin-top: 10px;
+        }
+        .result-box {
+            text-align: center; margin-top: 15px; padding: 15px; background: rgba(26, 115, 232, 0.1);
+            border-radius: var(--radius); border: 1px dashed var(--primary); display: none;
+        }
+        .result-box h4 { margin: 0; font-size: 1.5rem; color: var(--primary); }
+
+        /* --- تصميم قسم فريق النخبة --- */
+        .elite-card { text-align: center; background: var(--bg-card); padding: 30px 20px; border-radius: var(--radius); box-shadow: var(--shadow); }
+        .elite-card i { font-size: 3rem; color: var(--accent); margin-bottom: 15px; }
+        .elite-card h3 { margin: 0 0 10px 0; color: var(--primary); }
+        .elite-card p { line-height: 1.6; color: var(--text-muted); }
+
+        /* شريط التنقل السفلي (Bottom Navigation) */
+        .bottom-nav {
+            background: var(--bg-card); display: flex; justify-content: space-around;
+            padding: 12px 0; border-top: 1px solid var(--border);
+            padding-bottom: calc(12px + env(safe-area-inset-bottom)); z-index: 10;
+        }
+        .nav-item {
+            display: flex; flex-direction: column; align-items: center; gap: 5px;
+            color: var(--text-muted); cursor: pointer; transition: color 0.3s;
+            font-size: 0.75rem; font-weight: bold; width: 33%;
+        }
+        .nav-item i { font-size: 1.3rem; }
+        .nav-item.active { color: var(--primary); }
+
+        .loading-text { font-style: italic; opacity: 0.7; color: var(--accent); }
     </style>
 </head>
 <body>
 
-    <div class="app-header">
-        <h3>🤖 مساعد بوت زيد الذكي</h3>
-        <p>المنهج الليبي • بإشراف فريق النخبة</p>
+    <!-- الهيدر -->
+    <div class="header">
+        <h2>تطبيق زيد التعليمي</h2>
+        <p>إشراف: فريق النخبة | تطوير: Sabo alkanme</p>
     </div>
 
-    <div class="chat-area" id="chatArea">
-        <div class="msg bot-msg">مرحبتين بيك يا غالي! أنا بوت زيد الذكي، كيف نقدر نساعدك اليوم في قرايتك؟ 📚✨</div>
+    <!-- منطقة المحتوى -->
+    <div class="content-area">
+        
+        <!-- التبويب 1: الدردشة -->
+        <div id="chatTab" class="tab-content active">
+            <div class="chat-box" id="chatArea">
+                <div class="msg bot-msg">حياك الله وبياك يا طالب العلم! 📚✨<br>أنا "زيد"، مساعدك التعليمي الفصيح للمنهج الليبي، طوّرني المبدع "همّام الكانمي" مؤسس فريق النخبة. سَلني عمّا بدا لك!</div>
+            </div>
+            <div class="chat-input-container">
+                <input type="text" id="userInput" placeholder="اكتب سؤالك بوضوح هنا..." onkeypress="if(event.key === 'Enter') sendRequest()">
+                <button onclick="sendRequest()"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+
+        <!-- التبويب 2: حاسبة الدرجات -->
+        <div id="calcTab" class="tab-content">
+            <div class="calc-card">
+                <h3><i class="fas fa-calculator"></i> حاسبة المعدل التجريبية</h3>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">أدخل درجاتك التقريبية (من 100) لنحسب نسبتك المئوية.</p>
+                
+                <div class="input-group">
+                    <label>التربية الإسلامية:</label>
+                    <input type="number" id="sub1" min="0" max="100" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label>اللغة العربية:</label>
+                    <input type="number" id="sub2" min="0" max="100" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label>اللغة الإنجليزية:</label>
+                    <input type="number" id="sub3" min="0" max="100" placeholder="0">
+                </div>
+                <div class="input-group">
+                    <label>الرياضيات/العلوم:</label>
+                    <input type="number" id="sub4" min="0" max="100" placeholder="0">
+                </div>
+
+                <button class="calc-btn" onclick="calculateGrades()">احسب النسبة المئوية</button>
+                
+                <div class="result-box" id="resultBox">
+                    <p style="margin:0 0 5px 0; font-weight:bold;">المجموع الكلي:</p>
+                    <h4 id="totalScore">0 / 400</h4>
+                    <p style="margin:10px 0 5px 0; font-weight:bold;">النسبة المئوية:</p>
+                    <h4 id="percentageResult" style="color: var(--accent);">0%</h4>
+                </div>
+            </div>
+        </div>
+
+        <!-- التبويب 3: حول فريق النخبة -->
+        <div id="eliteTab" class="tab-content">
+            <div class="elite-card">
+                <i class="fas fa-crown"></i>
+                <h3>فريق النخبة</h3>
+                <p>تأسس الفريق برؤية واضحة لخدمة طلاب العلم في ليبيا وتسهيل مسيرتهم التعليمية عبر مشاريع تقنية رائدة مثل "فضاء" و"بوت زيد".</p>
+                <div style="margin-top: 20px; padding-top: 15px; border-top: 1px solid var(--border);">
+                    <p style="font-weight: bold; color: var(--text-main);">الإدارة والتطوير:</p>
+                    <p style="color: var(--primary);">همّام الكانمي (Sabo alkanme)</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <div class="input-bar">
-        <input type="text" id="studentInput" placeholder="اكتب سؤالك هنا..." onkeypress="checkEnter(event)">
-        <button onclick="sendToAI()">إرسال</button>
+    <!-- شريط التنقل السفلي -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('chatTab', this)">
+            <i class="fas fa-comment-dots"></i>
+            <span>الدردشة</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('calcTab', this)">
+            <i class="fas fa-percentage"></i>
+            <span>المعدل</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('eliteTab', this)">
+            <i class="fas fa-users"></i>
+            <span>النخبة</span>
+        </div>
     </div>
 
     <script>
-        const GEMINI_API_KEY = "AQ.Ab8RN6KrB_772z5c3LhX1lovCkdjjgTaLY-Lmpi_J07DbuY-Ww";
+        // مفتاح الـ API الخاص بك
+        const API_KEY = "AQ.Ab8RN6KrB_772z5c3LhX1lovCkdjjgTaLY-Lmpi_J07DbuY-Ww";
 
+        // تهيئة التليجرام
         const tg = window.Telegram.WebApp;
-        if (tg) { 
-            tg.ready(); 
-            tg.expand(); 
-            document.body.classList.add('tg'); 
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            if (tg.colorScheme === 'dark') document.body.classList.add('tg-dark');
         }
 
-        const chatArea = document.getElementById('chatArea');
-        const studentInput = document.getElementById('studentInput');
-
-        function checkEnter(e) { if (e.key === 'Enter') sendToAI(); }
-
-        async function sendToAI() {
-            const query = studentInput.value.trim();
-            if (!query) return;
-
-            appendMsg(query, 'user-msg');
-            studentInput.value = '';
-
-            const loadId = appendMsg('جاري صياغة الإجابة... ⏳', 'bot-msg loading-dots');
-            chatArea.scrollTop = chatArea.scrollHeight;
-
-            try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: query }] }],
-                        systemInstruction: {
-                            parts: [{ text: "أنت 'بوت زيد'، مساعد تعليمي ذكي ومخصص لمساعدة طلبة المناهج الدراسية في ليبيا. تم تطويرك وبرمجتك بواسطة المطور (همام الكانمي) تحت إشراف وإدارة (فريق النخبة). أسلوبك فصيح، سهل، ومليء بالتحفيز. إذا سألك أحد من طورك؟ أجب بفخر: طوّرني المطور همام الكانمي بدعم من فريق النخبة!" }]
-                        }
-                    })
-                });
-
-                const data = await res.json();
-                
-                // لو السيرفر رجّع خطأ واضح (زي حظر حظر آيبي أو مشكلة صلاحيات)
-                if (data.error) {
-                    document.getElementById(loadId).remove();
-                    appendMsg(`❌ خطأ من جوجل: ${data.error.message}`, 'bot-msg');
-                    return;
-                }
-
-                const replyText = data.candidates[0].content.parts[0].text;
-                document.getElementById(loadId).remove();
-                appendMsg(replyText, 'bot-msg');
-
-            } catch (err) {
-                document.getElementById(loadId).remove();
-                appendMsg(`❌ فشل الاتصال: ${err.message}`, 'bot-msg');
-            }
-            chatArea.scrollTop = chatArea.scrollHeight;
+        // --- نظام التبويبات ---
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
         }
 
-        function appendMsg(text, className) {
-            const id = 'id-' + Date.now();
-            const div = document.createElement('div');
-            div.className = `msg ${className}`;
-            div.id = id;
-            div.innerText = text;
-            chatArea.appendChild(div);
-            return id;
-        }
-    </script>
-</body>
-</html>
+        // --- نظام حاسبة الدرجات ---
+        function calculateGrades() {
+            let s1 = parseFloat(document.getElementById('sub1').value) || 0;
+            let s2 = parseFloat(document.getElementById('sub2').value) || 0;
+            let s3 = parseFloat(document.getElementById('sub3').value) || 0;
+            let s4 = parseFloat(document.Normally I can help with things like this, but I don't seem to have access to that content. You can try again or ask me for something else.
+
