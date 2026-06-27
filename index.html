@@ -32,22 +32,26 @@
             padding: 0;
             display: flex;
             flex-direction: column;
-            height: 100vh;
+            /* حل مشكلة القص نهائياً باستخدام الأبعاد الديناميكية ومتغيرات التليجرام */
+            height: 100dvh;
+            height: var(--tg-viewport-height, 100dvh);
             overflow: hidden;
         }
-        /* هيدر احترافي مدمج */
+        
+        /* هيدر محمي من التداخل العلوي */
         .app-header {
             background: var(--card-bg);
-            padding: 14px;
+            padding: 12px 16px;
+            padding-top: calc(12px + env(safe-area-inset-top));
             text-align: center;
             border-bottom: 1px solid var(--border-color);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            z-index: 10;
+            box-shadow: 0 1px 5px rgba(0,0,0,0.03);
+            flex-shrink: 0;
         }
         .app-header h3 { margin: 0; font-size: 16px; font-weight: 700; color: var(--primary-color); }
-        .app-header p { margin: 4px 0 0 0; font-size: 11px; opacity: 0.6; letter-spacing: 0.5px; }
+        .app-header p { margin: 3px 0 0 0; font-size: 11px; opacity: 0.6; }
 
-        /* منطقة الشات */
+        /* منطقة الشات مرنة وتتطابق مع المساحة المتبقية */
         .chat-area {
             flex: 1;
             padding: 16px;
@@ -63,7 +67,7 @@
             border-radius: 16px;
             font-size: 15px;
             line-height: 1.5;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.07);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
             word-wrap: break-word;
             white-space: pre-line;
             animation: fadeIn 0.2s ease-out;
@@ -79,24 +83,25 @@
             color: var(--text-color);
             align-self: flex-end;
             border-bottom-left-radius: 4px;
-            border: 1px solid rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.08);
         }
         
-        /* صندوق الإدخال السفلي الذكي */
+        /* بار سفلي ثابت ومحمي من الاختفاء تحت أزرار النظام */
         .input-bar {
             background: var(--card-bg);
-            padding: 12px 16px;
+            padding: 10px 14px;
             display: flex;
-            gap: 10px;
+            gap: 8px;
             align-items: center;
             border-top: 1px solid var(--border-color);
-            padding-bottom: calc(12px + env(safe-area-inset-bottom));
+            padding-bottom: calc(10px + env(safe-area-inset-bottom));
+            flex-shrink: 0;
         }
         .input-bar input {
             flex: 1;
-            padding: 12px 16px;
+            padding: 10px 14px;
             border: 1px solid var(--border-color);
-            border-radius: 24px;
+            border-radius: 20px;
             background: var(--bg-color);
             color: var(--text-color);
             font-size: 15px;
@@ -106,16 +111,14 @@
             background: var(--primary-color);
             color: #ffffff;
             border: none;
-            padding: 12px 22px;
-            border-radius: 24px;
+            padding: 10px 18px;
+            border-radius: 20px;
             font-weight: 600;
             font-size: 14px;
             cursor: pointer;
-            transition: background 0.2s;
         }
-        .input-bar button:active { opacity: 0.8; }
         .loading-dots { font-style: italic; opacity: 0.6; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
@@ -135,10 +138,8 @@
     </div>
 
     <script>
-        // تم إدراج مفتاحك الصحيح والجاهز هنا تلقائياً
         const GEMINI_API_KEY = "AQ.Ab8RN6KrB_772z5c3LhX1lovCkdjjgTaLY-Lmpi_J07DbuY-Ww";
 
-        // تهيئة التليجرام وجعل الواجهة كاملة الشاشة احترافية
         const tg = window.Telegram.WebApp;
         if (tg) { 
             tg.ready(); 
@@ -174,13 +175,21 @@
                 });
 
                 const data = await res.json();
-                const replyText = data.candidates[0].content.parts[0].text;
                 
+                // لو السيرفر رجّع خطأ واضح (زي حظر حظر آيبي أو مشكلة صلاحيات)
+                if (data.error) {
+                    document.getElementById(loadId).remove();
+                    appendMsg(`❌ خطأ من جوجل: ${data.error.message}`, 'bot-msg');
+                    return;
+                }
+
+                const replyText = data.candidates[0].content.parts[0].text;
                 document.getElementById(loadId).remove();
                 appendMsg(replyText, 'bot-msg');
+
             } catch (err) {
                 document.getElementById(loadId).remove();
-                appendMsg('عذراً يا غالي، حدث خطأ في الاتصال بالذكاء الاصطناعي. جرب مجدداً بعد ثوانٍ!', 'bot-msg');
+                appendMsg(`❌ فشل الاتصال: ${err.message}`, 'bot-msg');
             }
             chatArea.scrollTop = chatArea.scrollHeight;
         }
