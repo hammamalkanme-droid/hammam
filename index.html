@@ -3,232 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فريق النخبة | بوت زيد لمراحل الثانوية</title>
-    <!-- استيراد خط القاهرة الاحترافي -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
-    
+    <title>اختبار الإحصاء - الشهادة الثانوية ليبيا</title>
+    <!-- استدعاء خط عربي جميل -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #1e3c72;
-            --secondary-color: #2a5298;
-            --accent-color: #00c6ff;
-            --bg-color: #f4f7f9;
-            --card-bg: #ffffff;
-            --text-main: #2b2d42;
-            --text-muted: #6c757d;
-        }
-
         * {
             box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Cairo', sans-serif;
+            font-family: 'Tajawal', sans-serif;
         }
-
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-        }
-
-        /* الهيدر العلوي */
-        header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 25px 15px;
-            text-align: center;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        header h1 {
-            font-size: 1.8rem;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-        }
-
-        /* منطقة المحتوى الأوسط */
-        main {
-            flex: 1;
+            background-color: #f0f2f5;
             display: flex;
             justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            margin: 0;
             padding: 20px;
         }
-
-        .container {
+        .quiz-container {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 650px;
-        }
-
-        /* كرت السؤال */
-        .question-card {
-            background: var(--card-bg);
-            padding: 40px 30px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            max-width: 600px;
+            padding: 30px;
             text-align: center;
-            border-top: 6px solid var(--accent-color);
-            transition: transform 0.3s ease;
         }
-
-        .question-card:hover {
-            transform: translateY(-5px);
+        h1 {
+            color: #1a73e8;
+            font-size: 24px;
+            margin-bottom: 5px;
         }
-
-        .subject-badge {
-            display: inline-block;
-            background-color: rgba(0, 198, 255, 0.1);
-            color: var(--secondary-color);
-            padding: 6px 20px;
-            border-radius: 50px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            margin-bottom: 25px;
+        .question-counter {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 20px;
         }
-
         .question-text {
-            font-size: 1.6rem;
-            font-weight: 600;
-            line-height: 1.7;
-            margin-bottom: 35px;
-            min-height: 90px; /* للحفاظ على ثبات ارتفاع الكرت */
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.5;
         }
-
-        /* زر التجديد */
-        .renew-btn {
-            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .option-btn {
+            background-color: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: right;
+            font-weight: bold;
+            color: #444;
+        }
+        .option-btn:hover:not(:disabled) {
+            background-color: #e8f0fe;
+            border-color: #1a73e8;
+        }
+        .option-btn:disabled {
+            cursor: not-allowed;
+        }
+        /* ألوان الإجابات */
+        .correct {
+            background-color: #d4edda !important;
+            border-color: #28a745 !important;
+            color: #155724 !important;
+        }
+        .incorrect {
+            background-color: #f8d7da !important;
+            border-color: #dc3545 !important;
+            color: #721c24 !important;
+        }
+        .feedback {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            min-height: 27px;
+        }
+        .next-btn {
+            margin-top: 20px;
+            background-color: #1a73e8;
             color: white;
             border: none;
-            padding: 14px 35px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border-radius: 12px;
+            border-radius: 8px;
+            padding: 12px 25px;
+            font-size: 16px;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0, 198, 255, 0.3);
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
+            display: none; /* مخفي حتى يجاوب المستخدم */
+            width: 100%;
+            transition: 0.3s;
         }
-
-        .renew-btn:hover {
-            transform: scale(1.03);
-            box-shadow: 0 8px 20px rgba(0, 198, 255, 0.4);
-        }
-
-        .renew-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* تأثير الأنيميشن عند تغيير السؤال */
-        .fade-in {
-            animation: fadeInEffect 0.4s ease-out forwards;
-        }
-
-        @keyframes fadeInEffect {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* الفوتر السفلي */
-        footer {
-            background-color: var(--primary-color);
-            color: rgba(255, 255, 255, 0.8);
-            text-align: center;
-            padding: 18px 15px;
-            font-size: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        footer strong {
-            color: var(--accent-color);
-            font-weight: 800;
+        .next-btn:hover {
+            background-color: #155dbb;
         }
     </style>
 </head>
 <body>
 
-    <!-- الجزء العلوي -->
-    <header>
-        <h1>فريق النخبة | بوت زيد لمراحل الثانوية</h1>
-    </header>
-
-    <!-- المنتصف -->
-    <main>
-        <div class="container">
-            <div class="question-card">
-                <div class="subject-badge" id="subject-display">المادة: ...</div>
-                <div class="question-text" id="question-display">جاري تجهيز السؤال الأول...</div>
-                
-                <button class="renew-btn" onclick="nextQuestion()">
-                    <span>تجديد سؤال</span>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
-                    </svg>
-                </button>
-            </div>
+    <div class="quiz-container">
+        <h1>مراجعة الإحصاء - القسم العلمي</h1>
+        <div class="question-counter" id="question-counter">سؤال عشوائي من بنك الأسئلة</div>
+        
+        <div class="question-text" id="question-text">
+            جاري تحميل السؤال...
         </div>
-    </main>
+        
+        <div class="options-container" id="options-container">
+            <!-- الأزرار ستظهر هنا برمجياً -->
+        </div>
 
-    <!-- الجزء السفلي -->
-    <footer>
-        <p>المطور: <strong>همَّام الكانمي</strong> &copy; 2026</p>
-    </footer>
+        <div class="feedback" id="feedback"></div>
+        
+        <button class="next-btn" id="next-btn" onclick="loadNextQuestion()">سؤال تالي 🔄</button>
+    </div>
 
     <script>
-        // مصفوفة الأسئلة - يمكنك التعديل عليها وزيادتها بحريّة
-        const questionsList = [
-            { subject: "الفيزياء", question: "ما هو المبدأ الفيزيائي الذي تعتمد عليه حركة الصواريخ في الفضاء؟" },
-            { subject: "الكيمياء", question: "ماذا يحدث لدرجة الغليان عند زيادة الضغط الواقع على السائل؟" },
-            { subject: "الرياضيات", question: "إذا كانت د(س) = س² + 5، فما هي قيمة المشتقة الأولى د'(س)؟" },
-            { subject: "اللغة العربية", question: "ما هو حكم المبتدأ والخبر من حيث الإعراب في الجملة الاسمية؟" },
-            { subject: "الأحياء", question: "ما هو العُضي الخلوي المسؤول عن إنتاج الطاقة (ATP) في الخلية؟" },
-            { subject: "تقنية المعلومات", question: "ما الفرق الأساسي بين الذاكرة العشوائية RAM والذاكرة الدائمة ROM؟" },
-            { subject: "الجغرافيا", question: "ما هي الظاهرة الطبيعية المسؤولة عن تشكّل الكثبان الرملية في الصحراء؟" }
+        // ==========================================
+        // منطقة بنك الأسئلة (يمكنك إضافة الـ 500 سؤال هنا)
+        // ==========================================
+        const questionsBank = [
+            {
+                question: "إذا كان A و B حدثين متنافيين، فإن P(A ∪ B) يساوي:",
+                options: ["P(A) × P(B)", "P(A) + P(B)", "P(A) - P(B)", "صفر"],
+                correctIndex: 1 // الإجابة الصحيحة هي الخيار الثاني (العد يبدأ من 0)
+            },
+            {
+                question: "المساحة الكلية تحت منحنى التوزيع الطبيعي تساوي:",
+                options: ["0.5", "صفر", "1", "تعتمد على قيمة المتوسط"],
+                correctIndex: 2
+            },
+            {
+                question: "في توزيع ذات الحدين، إذا كان احتمال النجاح P، فإن احتمال الفشل q يساوي:",
+                options: ["1 - P", "P - 1", "P / 1", "1 + P"],
+                correctIndex: 0
+            },
+            {
+                question: "تستخدم توزيعة بواسون غالباً لنمذجة:",
+                options: ["الأحداث النادرة (الصغيرة جداً)", "الأحداث المؤكدة", "المتغيرات العشوائية المتصلة", "جميع ما سبق"],
+                correctIndex: 0
+            },
+            {
+                question: "الفرضية التي ندعي صحتها ونرغب في اختبارها وتأخذ علامة التساوي عادة تسمى:",
+                options: ["الفرضية البديلة", "الفرضية العدمية (الصفرية)", "مستوى المعنوية", "منطقة الرفض"],
+                correctIndex: 1
+            }
+            // أضف باقي الأسئلة هنا بنفس النسق...
+            // { question: "السؤال", options: ["خيار1", "خيار2", "خيار3", "خيار4"], correctIndex: رقم_الإجابة_الصحيحة }
         ];
 
-        let lastIndex = -1;
+        // متغير لحفظ السؤال الحالي
+        let currentQuestion;
 
-        function nextQuestion() {
-            const subjectEl = document.getElementById('subject-display');
-            const questionEl = document.getElementById('question-display');
+        function loadNextQuestion() {
+            // 1. إعادة ضبط الواجهة
+            const optionsContainer = document.getElementById('options-container');
+            const feedback = document.getElementById('feedback');
+            const nextBtn = document.getElementById('next-btn');
             
-            // إزالة تأثير الحركة لإعادة تشغيله من جديد
-            subjectEl.classList.remove('fade-in');
-            questionEl.classList.remove('fade-in');
-            
-            // اختيار عشوائي ذكي يمنع تكرار نفس السؤال مرتين متتاليتين
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * questionsList.length);
-            } while (randomIndex === lastIndex && questionsList.length > 1);
-            
-            lastIndex = randomIndex;
-            const currentItem = questionsList[randomIndex];
-            
-            // إجبار المتصفح على إعادة حساب الأبعاد لتفعيل الأنيميشن مجدداً
-            void subjectEl.offsetWidth;
-            
-            // تحديث البيانات في الواجهة
-            subjectEl.textContent = `المادة: ${currentItem.subject}`;
-            questionEl.textContent = currentItem.question;
-            
-            // إضافة تأثير الحركة
-            subjectEl.classList.add('fade-in');
-            questionEl.classList.add('fade-in');
+            optionsContainer.innerHTML = '';
+            feedback.innerHTML = '';
+            nextBtn.style.display = 'none';
+
+            // 2. اختيار سؤال عشوائي من بنك الأسئلة
+            const randomIndex = Math.floor(Math.random() * questionsBank.length);
+            currentQuestion = questionsBank[randomIndex];
+
+            // 3. عرض نص السؤال
+            document.getElementById('question-text').innerText = currentQuestion.question;
+
+            // 4. إنشاء أزرار الخيارات
+            currentQuestion.options.forEach((optionText, index) => {
+                const btn = document.createElement('button');
+                btn.classList.add('option-btn');
+                btn.innerText = optionText;
+                // عند الضغط على الخيار، استدعِ دالة التحقق
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
         }
 
-        // تشغيل أول سؤال تلقائياً عند فتح الصفحة
-        window.onload = nextQuestion;
-    </script>
+        function checkAnswer(selectedIndex, selectedButton) {
+            const optionsContainer = document.getElementById('options-container');
+            const allButtons = optionsContainer.querySelectorAll('.option-btn');
+            const feedback = document.getElementById('feedback');
+            
+            // تعطيل جميع الأزرار لمنع الإجابة مرتين
+            allButtons.forEach(btn => btn.disabled = true);
 
+            // التحقق من الإجابة
+            if (selectedIndex === currentQuestion.correctIndex) {
+                // إجابة صحيحة
+                selectedButton.classList.add('correct');
+                feedback.innerHTML = '<span style="color: #28a745;">إجابة صحيحة! أحسنت 👏</span>';
+            } else {
+                // إجابة خاطئة
+                selectedButton.classList.add('incorrect');
+                // تظليل الإجابة الصحيحة باللون الأخضر حتى يتعلم منها الطالب
+                allButtons[currentQuestion.correctIndex].classList.add('correct');
+                feedback.innerHTML = '<span style="color: #dc3545;">إجابة خاطئة! راجع الإجابة الصحيحة المظللة بالأخضر.</span>';
+            }
+
+            // إظهار زر "سؤال تالي"
+            document.getElementById('next-btn').style.display = 'block';
+        }
+
+        // تشغيل أول سؤال عند فتح الصفحة
+        window.onload = loadNextQuestion;
+    </script>
 </body>
 </html>
