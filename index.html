@@ -3,219 +3,551 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>اختبار الإحصاء - الشهادة الثانوية ليبيا</title>
-    <!-- استدعاء خط عربي جميل -->
-    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <title>همام - المنهج الليبي</title>
     <style>
         * {
-            box-sizing: border-box;
-            font-family: 'Tajawal', sans-serif;
-        }
-        body {
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
         }
-        .quiz-container {
-            background-color: #ffffff;
-            border-radius: 12px;
-            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
-            width: 100%;
-            max-width: 600px;
+
+        header {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        header h1 {
+            font-size: 3em;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        header p {
+            color: #a0a0a0;
+            font-size: 1.2em;
+        }
+
+        .subjects {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .subject-card {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
             padding: 30px;
             text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
         }
-        h1 {
-            color: #1a73e8;
-            font-size: 24px;
-            margin-bottom: 5px;
+
+        .subject-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255,255,255,0.1);
+            border-color: #00d4ff;
         }
-        .question-counter {
-            color: #666;
-            font-size: 14px;
-            margin-bottom: 20px;
+
+        .subject-card .icon {
+            font-size: 3em;
+            margin-bottom: 15px;
         }
-        .question-text {
-            font-size: 20px;
-            font-weight: 700;
-            color: #333;
-            margin-bottom: 25px;
-            line-height: 1.5;
+
+        .subject-card h3 {
+            font-size: 1.3em;
+            margin-bottom: 10px;
         }
-        .options-container {
+
+        .chat-container {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 25px;
+            max-width: 800px;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            padding: 20px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        .chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px 20px;
+            border-radius: 20px;
+            max-width: 80%;
+            line-height: 1.6;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            background: #00d4ff;
+            color: #000;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .message.bot {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+
+        .chat-input {
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            padding: 20px;
+            gap: 10px;
+            border-top: 1px solid rgba(255,255,255,0.1);
         }
-        .option-btn {
-            background-color: #f8f9fa;
-            border: 2px solid #e0e0e0;
-            border-radius: 8px;
-            padding: 15px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: right;
-            font-weight: bold;
-            color: #444;
-        }
-        .option-btn:hover:not(:disabled) {
-            background-color: #e8f0fe;
-            border-color: #1a73e8;
-        }
-        .option-btn:disabled {
-            cursor: not-allowed;
-        }
-        /* ألوان الإجابات */
-        .correct {
-            background-color: #d4edda !important;
-            border-color: #28a745 !important;
-            color: #155724 !important;
-        }
-        .incorrect {
-            background-color: #f8d7da !important;
-            border-color: #dc3545 !important;
-            color: #721c24 !important;
-        }
-        .feedback {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-            min-height: 27px;
-        }
-        .next-btn {
-            margin-top: 20px;
-            background-color: #1a73e8;
-            color: white;
+
+        .chat-input input {
+            flex: 1;
+            padding: 15px 20px;
             border: none;
-            border-radius: 8px;
-            padding: 12px 25px;
-            font-size: 16px;
-            cursor: pointer;
-            display: none; /* مخفي حتى يجاوب المستخدم */
-            width: 100%;
-            transition: 0.3s;
+            border-radius: 50px;
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+            font-size: 1em;
+            outline: none;
         }
-        .next-btn:hover {
-            background-color: #155dbb;
+
+        .chat-input input::placeholder {
+            color: #888;
+        }
+
+        .chat-input button {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(90deg, #00d4ff, #7b2cbf);
+            color: #fff;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .chat-input button:hover {
+            transform: scale(1.05);
+        }
+
+        .typing {
+            display: flex;
+            gap: 5px;
+            padding: 10px;
+        }
+
+        .typing span {
+            width: 8px;
+            height: 8px;
+            background: #00d4ff;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite;
+        }
+
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 10px 20px;
+        }
+
+        .suggestion-chip {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .suggestion-chip:hover {
+            background: #00d4ff;
+            color: #000;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        /* Scrollbar */
+        .chat-messages::-webkit-scrollbar {
+            width: 8px;
+        }
+        .chat-messages::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #00d4ff;
+            border-radius: 4px;
         }
     </style>
 </head>
 <body>
 
-    <div class="quiz-container">
-        <h1>مراجعة الإحصاء - القسم العلمي</h1>
-        <div class="question-counter" id="question-counter">سؤال عشوائي من بنك الأسئلة</div>
-        
-        <div class="question-text" id="question-text">
-            جاري تحميل السؤال...
-        </div>
-        
-        <div class="options-container" id="options-container">
-            <!-- الأزرار ستظهر هنا برمجياً -->
+    <div class="container">
+        <header>
+            <h1>🎓 مساعدي</h1>
+            <p>مساعدك الذكي للمنهج الليبي</p>
+        </header>
+
+        <div class="subjects">
+            <div class="subject-card" onclick="askSubject('رياضيات')">
+                <div class="icon">🔢</div>
+                <h3>الرياضيات</h3>
+                <p>منهج ليبي كامل</p>
+            </div>
+            <div class="subject-card" onclick="askSubject('علوم')">
+                <div class="icon">🔬</div>
+                <h3>العلوم</h3>
+                <p>فيزياء، كيمياء، أحياء</p>
+            </div>
+            <div class="subject-card" onclick="askSubject('عربي')">
+                <div class="icon">📖</div>
+                <h3>اللغة العربية</h3>
+                <p>نحو، أدب، بلاغة</p>
+            </div>
+            <div class="subject-card" onclick="askSubject('تاريخ')">
+                <div class="icon">🏛️</div>
+                <h3>التاريخ</h3>
+                <p>تاريخ ليبيا والعالم</p>
+            </div>
         </div>
 
-        <div class="feedback" id="feedback"></div>
-        
-        <button class="next-btn" id="next-btn" onclick="loadNextQuestion()">سؤال تالي 🔄</button>
+        <div class="chat-container">
+            <div class="chat-header">
+                💬 اسألني أي شيء عن المنهج الليبي
+            </div>
+            
+            <div class="suggestions">
+                <span class="suggestion-chip" onclick="sendQuick('اشرح لي درس التنفس الخلوي')">التنفس الخلوي</span>
+                <span class="suggestion-chip" onclick="sendQuick('قانون نيوتن الأول')">قانون نيوتن</span>
+                <span class="suggestion-chip" onclick="sendQuick('الإبلاغ في النحو')">الإبلاغ</span>
+                <span class="suggestion-chip" onclick="sendQuick('ثورة الفاتح')">ثورة الفاتح</span>
+                <span class="suggestion-chip" onclick="sendQuick('المعادلات التفاضلية')">معادلات تفاضلية</span>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    مرحباً! أنا مساعدك الدراسي للمنهج الليبي. 😊<br><br>
+                    ممكن تسألني عن أي مادة: رياضيات، علوم، عربي، تاريخ... وأنا راح أجاوبك بناءً على المنهج الرسمي.
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="userInput" placeholder="اكتب سؤالك هنا..." onkeypress="if(event.key==='Enter')sendMessage()">
+                <button onclick="sendMessage()">إرسال</button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🚀 مساعدي - مبني بذكاء اصطناعي محلي | المنهج الليبي</p>
+        </div>
     </div>
 
     <script>
-        // ==========================================
-        // منطقة بنك الأسئلة (يمكنك إضافة الـ 500 سؤال هنا)
-        // ==========================================
-        const questionsBank = [
-            {
-                question: "إذا كان A و B حدثين متنافيين، فإن P(A ∪ B) يساوي:",
-                options: ["P(A) × P(B)", "P(A) + P(B)", "P(A) - P(B)", "صفر"],
-                correctIndex: 1 // الإجابة الصحيحة هي الخيار الثاني (العد يبدأ من 0)
-            },
-            {
-                question: "المساحة الكلية تحت منحنى التوزيع الطبيعي تساوي:",
-                options: ["0.5", "صفر", "1", "تعتمد على قيمة المتوسط"],
-                correctIndex: 2
-            },
-            {
-                question: "في توزيع ذات الحدين، إذا كان احتمال النجاح P، فإن احتمال الفشل q يساوي:",
-                options: ["1 - P", "P - 1", "P / 1", "1 + P"],
-                correctIndex: 0
-            },
-            {
-                question: "تستخدم توزيعة بواسون غالباً لنمذجة:",
-                options: ["الأحداث النادرة (الصغيرة جداً)", "الأحداث المؤكدة", "المتغيرات العشوائية المتصلة", "جميع ما سبق"],
-                correctIndex: 0
-            },
-            {
-                question: "الفرضية التي ندعي صحتها ونرغب في اختبارها وتأخذ علامة التساوي عادة تسمى:",
-                options: ["الفرضية البديلة", "الفرضية العدمية (الصفرية)", "مستوى المعنوية", "منطقة الرفض"],
-                correctIndex: 1
-            }
-            // أضف باقي الأسئلة هنا بنفس النسق...
-            // { question: "السؤال", options: ["خيار1", "خيار2", "خيار3", "خيار4"], correctIndex: رقم_الإجابة_الصحيحة }
-        ];
+        // ====== قاعدة بيانات المنهج الليبي ======
+        const knowledgeBase = {
+            // علوم
+            "التنفس الخلوي": `التنفس الخلوي (المنهج الليبي - الصف الثالث الثانوي):
+• هو عملية تحلل الجلوكوز في الخلية لإنتاج الطاقة (ATP).
+• يحدث في الميتوكوندريا.
+• المعادلة: C6H12O6 + 6O2 → 6CO2 + 6H2O + طاقة
+• نوعان: تنفس هوائي (بأكسجين) وتنفس لاهوائي (بدون أكسجين).
+• التنفس اللاهوائي يحدث في العضلات أثناء الجهد الشاق وينتج حمض اللاكتيك.`,
 
-        // متغير لحفظ السؤال الحالي
-        let currentQuestion;
+            "البلاستيدات الخضراء": `البلاستيدات الخضراء (الكلوروبلاست):
+• عضية حيوية موجودة في خلايا النبات الأخضر.
+• تحتوي على الكلوروفيل (الصبغة الخضراء).
+• موقع البناء الضوئي.
+• تحتوي على أغشية داخلية (الجرانا) وسائل (الستروما).
+• البناء الضوئي: 6CO2 + 6H2O + ضوء → C6H12O6 + 6O2`,
 
-        function loadNextQuestion() {
-            // 1. إعادة ضبط الواجهة
-            const optionsContainer = document.getElementById('options-container');
-            const feedback = document.getElementById('feedback');
-            const nextBtn = document.getElementById('next-btn');
+            "الغدد الصماء": `الغدد الصماء (المنهج الليبي):
+• غدد لا قنوات، تفرز هرمونات مباشرة في الدم.
+• أهم الغدد:
+  - الغدة النخامية: "الغدة الأم"، تتحكم في باقي الغدد.
+  - الغدة الدرقية: تفرز الثيروكسين، تنظم عملية الأيض.
+  - الغدة جار الدرقية: تفرز الكالسيتونين.
+  - البنكرياس: يفرز الأنسولين والجلوكاجون.
+  - الغدة الكظرية: تفرز الأدرينالين والكورتيزول.
+  - المبيض/الخصية: هرمونات الجنس.`,
+
+            // فيزياء
+            "قانون نيوتن": `قوانين نيوتن للحركة (المنهج الليبي):
+• القانون الأول: "الجسم الساكن يبقى ساكناً والجسم المتحرك يبقى متحركاً بسرعة منتظمة في خط مستقيم ما لم تؤثر عليه قوة محصلة غير متزنة."
+• القانون الثاني: F = m × a (القوة = الكتلة × التسارع)
+• القانون الثالث: "لكل فعل رد فعل مساوٍ له في المقدار ومعاكس له في الاتجاه."`,
+
+            "الطاقة الحركية": `الطاقة الحركية:
+• هي الطاقة التي يكتسبها الجسم بسبب حركته.
+• القانون: KE = ½ × m × v²
+• حيث: m = الكتلة (كغ)، v = السرعة (م/ث)
+• الوحدة: جول (J)`,
+
+            "الشحنة الكهربائية": `الشحنة الكهربائية:
+• خاصية فيزيائية تسبب قوة التجاذب أو التنافر.
+• نوعان: موجبة (+) وسالبة (-).
+• وحدة قياسها: الكولوم (C).
+• قانون كولوم: F = k × (q1 × q2) / r²
+• الشحنة الابتدائية: e = 1.6 × 10^-19 C`,
+
+            // رياضيات
+            "المعادلات التفاضلية": `المعادلات التفاضلية (المنهج الليبي - البكالوريا):
+• معادلة تربط بين دالة ومشتقاتها.
+• الدرجة: أعلى مشتقة في المعادلة.
+• الرتبة: أعلى مشتقة بعد إزالة الأسس.
+• أنواع:
+  - معادلات منفصلة المتغيرات
+  - معادلات متجانسة
+  - معادلات خطية من الرتبة الأولى
+• الحل العام يحتوي على ثابت (C) يُحدد بالشروط الأولية.`,
+
+            "المصفوفات": `المصفوفات:
+• مجموعة من الأعداد مرتبة في صفوف وأعمدة.
+• حجم المصفوفة: عدد الصفوف × عدد الأعمدة.
+• العمليات: الجمع، الطرح، الضرب (ليس تبديلياً).
+• المحدد (Determinant) يُحسب للمصفوفات المربعة.
+• المصفوفة العكسية: A⁻¹ حيث A × A⁻¹ = I`,
+
+            "الدوال": `الدوال (المنهج الليبي):
+• العلاقة التي تربط كل عنصر من مجموعة بنطاق بعنصر واحد فقط من مجموعة المقابل.
+• أنواع: خطية، تربيعية، أسية، لوغاريتمية، مثلثية.
+• الدالة التربيعية: f(x) = ax² + bx + c
+• الرأس: x = -b / 2a
+• المميز: Δ = b² - 4ac`,
+
+            // عربي
+            "الإبلاغ": `الإبلاغ في النحو (المنهج الليبي):
+• هو إفادة المخاطب بخبر كان مستتراً في نفسه.
+• أنواع الإبلاغ:
+  1. إبلاغ بالكلمة (الأسماء الستة: اسم كان، اسم إن، اسم ما كان، اسم ما ليس، اسم ما دام، اسم ما برح)
+  2. إبلاغ بالإشارة
+  3. إبلاغ بالتعريف
+  4. إبلاغ بالضمير
+• المبتدأ والخبر: نوع من الإبلاغ بالكلمة.`,
+
+            "الإضافة": `الإضافة (المنهج الليبي):
+• إضافة اسم لآخر لبيان التخصيص.
+• أنواع:
+  - إضافة لفظية: الإضافة لغير العاقل (كتابُ علم)
+  - إضافة معنوية: الإضافة للعاقل (غلامُ زيد)
+• الحكم: المضاف إليه مجرور دائماً.
+• المضاف يُنصب ويُجر ويُرفع حسب موقعه.`,
+
+            "البلاغة": `البلاغة - علم المعاني:
+• الإيجاز: حذف ما يمكن استيفاؤه بالقصد.
+• الإطناب: زيادة على القدر لغرض بلاغي.
+• الطباق: وضع ضدين في سياق واحد.
+• السجع: التوازن في آخر الكلمتين المتعاقبتين.
+• الجناس: تشابه اللفظين في اللفظ واختلافهما في المعنى.
+• التشبيه: مُشبَّه + أداة + مشبه به + وجه الشبه.`,
+
+            // تاريخ
+            "ثورة الفاتح": `ثورة الفاتح (1 سبتمبر 1969):
+• انقلاب عسكري أطاح بالملكية في ليبيا.
+• قادها الضابط معمر القذافي.
+• أول عمل: إلغاء الملكية وإعلان الجمهورية العربية الليبية.
+• أهم الإنجازات:
+  - تأميم النفط (1971)
+  - إنشاء السد العظيم (الصناعية الكبرى)
+  - مجانية التعليم والصحة
+  - إصدار "الكتاب الأخضر" (1976)
+• ليبيا أصبحت "الجماهيرية العربية الليبية الشعبية الاشتراكية العظمى" عام 1977.`,
+
+            "تاريخ ليبيا": `تاريخ ليبيا القديم:
+• حضارات: برقة (قورينا)، ليبتس (لبدة)، صبراتة، غدامس.
+• الاحتلال الإيطالي (1911-1943): بدأ بإعلان الحرب على تركيا.
+• فترة الانتداب البريطاني (1943-1951).
+• الاستقلال: 24 ديسمبر 1951 (المملكة الليبية).
+• دستور 1951: أول دستور لليبيا المستقلة.
+• العاصمة: طرابلس (بعد الوحدة 1963).`,
+
+            "الحرب العالمية": `الحرب العالمية الثانية في ليبيا:
+• معركة علم الهلال (1940-1943): بين الجيش الإيطالي والبريطاني.
+• الجنرال رومل "ثعلب الصحراء".
+• خط مارث: خط دفاعي إيطالي.
+• معركة البريقة وطبرق.
+• دخول الجيش الأمريكي عبر عملية الشعلة (1942).
+• انتهت بانتصار الحلفاء وهزيمة المحور.`
+        };
+
+        // ====== محرك البحث الذكي ======
+        function findAnswer(question) {
+            question = question.toLowerCase();
             
-            optionsContainer.innerHTML = '';
-            feedback.innerHTML = '';
-            nextBtn.style.display = 'none';
+            // البحث عن مطابقة مباشرة
+            for (let key in knowledgeBase) {
+                if (question.includes(key.toLowerCase())) {
+                    return knowledgeBase[key];
+                }
+            }
 
-            // 2. اختيار سؤال عشوائي من بنك الأسئلة
-            const randomIndex = Math.floor(Math.random() * questionsBank.length);
-            currentQuestion = questionsBank[randomIndex];
+            // البحث عن كلمات مفتاحية
+            const keywords = {
+                "تنفس": "التنفس الخلوي",
+                "بلاستيد": "البلاستيدات الخضراء",
+                "كلوروبلاست": "البلاستيدات الخضراء",
+                "بناء ضوئي": "البلاستيدات الخضراء",
+                "غدة": "الغدد الصماء",
+                "هرمون": "الغدد الصماء",
+                "نخامية": "الغدد الصماء",
+                "درقية": "الغدد الصماء",
+                "نيوتن": "قانون نيوتن",
+                "حركة": "قانون نيوتن",
+                "قوة": "قانون نيوتن",
+                "طاقة": "الطاقة الحركية",
+                "حركية": "الطاقة الحركية",
+                "شحنة": "الشحنة الكهربائية",
+                "كولوم": "الشحنة الكهربائية",
+                "كهرباء": "الشحنة الكهربائية",
+                "تفاضل": "المعادلات التفاضلية",
+                "مشتقة": "المعادلات التفاضلية",
+                "مصفوفة": "المصفوفات",
+                "دالة": "الدوال",
+                "تربيعية": "الدوال",
+                "إبلاغ": "الإبلاغ",
+                "مبتدأ": "الإبلاغ",
+                "خبر": "الإبلاغ",
+                "إضافة": "الإضافة",
+                "مضاف": "الإضافة",
+                "بلاغة": "البلاغة",
+                "سجع": "البلاغة",
+                "طباق": "البلاغة",
+                "فاتح": "ثورة الفاتح",
+                "قذافي": "ثورة الفاتح",
+                "1969": "ثورة الفاتح",
+                "جماهيرية": "ثورة الفاتح",
+                "ملكية": "تاريخ ليبيا",
+                "استقلال": "تاريخ ليبيا",
+                "إيطاليا": "الحرب العالمية",
+                "حرب عالمية": "الحرب العالمية",
+                "رومل": "الحرب العالمية"
+            };
 
-            // 3. عرض نص السؤال
-            document.getElementById('question-text').innerText = currentQuestion.question;
+            for (let word in keywords) {
+                if (question.includes(word)) {
+                    return knowledgeBase[keywords[word]];
+                }
+            }
 
-            // 4. إنشاء أزرار الخيارات
-            currentQuestion.options.forEach((optionText, index) => {
-                const btn = document.createElement('button');
-                btn.classList.add('option-btn');
-                btn.innerText = optionText;
-                // عند الضغط على الخيار، استدعِ دالة التحقق
-                btn.onclick = () => checkAnswer(index, btn);
-                optionsContainer.appendChild(btn);
-            });
+            // إجابة افتراضية
+            return `عذراً، هذا السؤال خارج نطاق المنهج الليبي المخزن حالياً في قاعدة البيانات. 
+
+📚 المواد المتاحة حالياً:
+• العلوم: التنفس الخلوي، البلاستيدات، الغدد الصماء
+• الفيزياء: قوانين نيوتن، الطاقة الحركية، الشحنة الكهربائية
+• الرياضيات: المعادلات التفاضلية، المصفوفات، الدوال
+• العربية: الإبلاغ، الإضافة، البلاغة
+• التاريخ: ثورة الفاتح، تاريخ ليبيا، الحرب العالمية
+
+جرب تسأل بكلمات مختلفة أو اختار من الاقتراحات أعلاه! 😊`;
         }
 
-        function checkAnswer(selectedIndex, selectedButton) {
-            const optionsContainer = document.getElementById('options-container');
-            const allButtons = optionsContainer.querySelectorAll('.option-btn');
-            const feedback = document.getElementById('feedback');
-            
-            // تعطيل جميع الأزرار لمنع الإجابة مرتين
-            allButtons.forEach(btn => btn.disabled = true);
-
-            // التحقق من الإجابة
-            if (selectedIndex === currentQuestion.correctIndex) {
-                // إجابة صحيحة
-                selectedButton.classList.add('correct');
-                feedback.innerHTML = '<span style="color: #28a745;">إجابة صحيحة! أحسنت 👏</span>';
-            } else {
-                // إجابة خاطئة
-                selectedButton.classList.add('incorrect');
-                // تظليل الإجابة الصحيحة باللون الأخضر حتى يتعلم منها الطالب
-                allButtons[currentQuestion.correctIndex].classList.add('correct');
-                feedback.innerHTML = '<span style="color: #dc3545;">إجابة خاطئة! راجع الإجابة الصحيحة المظللة بالأخضر.</span>';
-            }
-
-            // إظهار زر "سؤال تالي"
-            document.getElementById('next-btn').style.display = 'block';
+        // ====== وظائف الشات ======
+        function addMessage(text, isUser) {
+            const chat = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = `message ${isUser ? 'user' : 'bot'}`;
+            div.innerHTML = text.replace(/\n/g, '<br>');
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
         }
 
-        // تشغيل أول سؤال عند فتح الصفحة
-        window.onload = loadNextQuestion;
+        function showTyping() {
+            const chat = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'message bot typing';
+            div.id = 'typingIndicator';
+            div.innerHTML = '<span></span><span></span><span></span>';
+            chat.appendChild(div);
+            chat.scrollTop = chat.scrollHeight;
+        }
+
+        function hideTyping() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('userInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            addMessage(text, true);
+            input.value = '';
+
+            showTyping();
+
+            // محاكاة تأخير الرد (1-2 ثانية)
+            setTimeout(() => {
+                hideTyping();
+                const answer = findAnswer(text);
+                addMessage(answer, false);
+            }, 1000 + Math.random() * 1000);
+        }
+
+        function sendQuick(text) {
+            document.getElementById('userInput').value = text;
+            sendMessage();
+        }
+
+        function askSubject(subject) {
+            const questions = {
+                'رياضيات': 'اشرح لي المعادلات التفاضلية',
+                'علوم': 'اشرح لي التنفس الخلوي',
+                'عربي': 'اشرح لي الإبلاغ في النحو',
+                'تاريخ': 'اشرح لي ثورة الفاتح'
+            };
+            sendQuick(questions[subject]);
+        }
+
+        // رسالة ترحيب إضافية
+        console.log('🎓 مساعدي - تم تحميل قاعدة بيانات المنهج الليبي بنجاح!');
     </script>
+
 </body>
-</html>
+                    </html>
