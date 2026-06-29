@@ -13,9 +13,9 @@
             --text-main: #1e293b;
             --text-muted: #64748b;
             --primary: #0f172a;
-            --accent: #b45309; /* لون ذهبي/نحاسي للمشاريع الدينية والثقافية */
-            --border-radius: 16px;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --accent: #b45309;
+            --border-radius: 12px;
+            --shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
             --transition: all 0.3s ease;
         }
 
@@ -34,17 +34,17 @@
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 850px;
             margin: 0 auto;
         }
 
         header {
             text-align: center;
-            margin-bottom: 60px;
+            margin-bottom: 50px;
         }
 
         header h1 {
-            font-size: 2.5rem;
+            font-size: 2.3rem;
             color: var(--primary);
             font-weight: 900;
             margin-bottom: 15px;
@@ -55,10 +55,10 @@
         header h1::after {
             content: '';
             position: absolute;
-            bottom: -8px;
+            bottom: -6px;
             left: 50%;
             transform: translateX(-50%);
-            width: 80px;
+            width: 60px;
             height: 4px;
             background-color: var(--accent);
             border-radius: 2px;
@@ -67,69 +67,123 @@
         header p {
             color: var(--text-muted);
             font-size: 1.1rem;
-            max-width: 60px0px;
-            margin: 0 auto;
         }
 
-        .projects-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 30px;
-        }
-
-        .project-card {
-            background-color: var(--card-bg);
-            border-radius: var(--border-radius);
-            padding: 30px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0, 0, 0, 0.02);
-            transition: var(--transition);
+        .accordion-container {
             display: flex;
             flex-direction: column;
+            gap: 15px;
+        }
+
+        .project-item {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            border: 1px solid #e2e8f0;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .project-item:hover {
+            border-color: rgba(180, 83, 9, 0.3);
+        }
+
+        .project-header {
+            padding: 20px 25px;
+            display: flex;
             justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            background-color: var(--card-bg);
+            transition: var(--transition);
         }
 
-        .project-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-            border-color: rgba(180, 83, 9, 0.2);
+        .project-header:hover {
+            background-color: #fafafa;
         }
 
-        .project-badge {
-            align-self: flex-start;
-            background-color: rgba(180, 83, 9, 0.1);
+        .project-title-block {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .project-number {
+            font-size: 1.2rem;
+            font-weight: 700;
             color: var(--accent);
+            background-color: rgba(180, 83, 9, 0.08);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .project-title-text {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .project-meta {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .time-badge {
+            font-size: 0.85rem;
             padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.85rem;
             font-weight: 500;
-            margin-bottom: 15px;
+            background-color: #f1f5f9;
+            color: var(--text-muted);
         }
 
-        .project-title {
-            font-size: 1.4rem;
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 15px;
+        .time-badge.urgent {
+            background-color: rgba(180, 83, 9, 0.1);
+            color: var(--accent);
+        }
+
+        .icon-arrow {
+            width: 20px;
+            height: 20px;
+            transition: var(--transition);
+            fill: var(--text-muted);
+        }
+
+        /* تنسيق المحتوى المخفي */
+        .project-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            background-color: #fdfdfd;
+        }
+
+        .project-body {
+            padding: 25px;
+            border-top: 1px solid #f1f5f9;
         }
 
         .project-desc {
-            color: var(--text-muted);
-            font-size: 1rem;
+            color: var(--text-main);
+            font-size: 1.05rem;
             margin-bottom: 20px;
             text-align: justify;
         }
 
         .project-features {
             list-style: none;
-            border-top: 1px dashed #e2e8f0;
-            padding-top: 15px;
+            padding-right: 10px;
         }
 
         .project-features li {
-            font-size: 0.9rem;
-            color: var(--text-main);
-            margin-bottom: 8px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
             display: flex;
             align-items: center;
         }
@@ -141,20 +195,37 @@
             display: inline-block;
             width: 15px;
             margin-left: 5px;
+            font-size: 1.2rem;
+        }
+
+        /* الفئات النشطة عبر الـ JavaScript */
+        .project-item.active .project-content {
+            max-height: 500px; /* تزداد ديناميكياً لتسَع المحتوى */
+        }
+
+        .project-item.active .icon-arrow {
+            transform: rotate(180px);
+            fill: var(--accent);
+        }
+
+        .project-item.active {
+            border-color: var(--accent);
+            box-shadow: 0 10px 25px rgba(180, 83, 9, 0.05);
         }
 
         footer {
             text-align: center;
-            margin-top: 80px;
+            margin-top: 60px;
             padding-top: 20px;
             border-top: 1px solid #e2e8f0;
             color: var(--text-muted);
             font-size: 0.9rem;
         }
 
-        @media (max-width: 768px) {
-            header h1 { font-size: 2rem; }
-            body { padding: 20px 10px; }
+        @media (max-width: 600px) {
+            .project-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+            .project-meta { width: 100%; justify-content: space-between; }
+            header h1 { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -163,115 +234,201 @@
     <div class="container">
         <header>
             <h1>مشاريع فريق النخبة القادمة</h1>
-            <p>رؤى مستقبلية طموحة، وأدوات رقمية مبتكرة تُبنى بسواعد النخبة لخدمة العلم، الدين، والمعرفة في ليبيا والعالم العربي.</p>
+            <p>اضغط على أي مشروع لاستكشاف التفاصيل ومواعيد الإطلاق المقررة.</p>
         </header>
 
-        <div class="projects-grid">
+        <div class="accordion-container">
 
             <!-- مشروع 1 -->
-            <div class="project-card">
-                <div>
-                    <span class="project-badge">تعليمي شرعي</span>
-                    <h2 class="project-title">1. مشروع مرجان الرقمي</h2>
-                    <p class="project-desc">بوابة رقمية متكاملة مخصصة لطلاب المعاهد المتوسطة للدراسات الإسلامية في ليبيا. يسعى المشروع إلى تيسير العلوم الشرعية وتقريبها للطلاب عبر توفير محتوى منظم ومنهجي يسد ثغرة غياب المصادر الرقمية لهذه الفئة.</p>
+            <div class="project-item">
+                <div class="project-header" onclick="toggleProject(this)">
+                    <div class="project-title-block">
+                        <div class="project-number">١</div>
+                        <div class="project-title-text">مشروع مرجان الرقمي المعني بالمعاهد الدينية</div>
+                    </div>
+                    <div class="project-meta">
+                        <span class="time-badge urgent">سبتمبر القادم</span>
+                        <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
                 </div>
-                <ul class="project-features">
-                    <li>ملخصات وحلول نموذجية للمناهج الشرعية.</li>
-                    <li>بنك أسئلة وتفاعلات دورية مع الطلبة.</li>
-                    <li>ذكاء البوت: جمع محتوى القناة وتنظيمه لتسهيل الوصول الفوري.</li>
-                </ul>
+                <div class="project-content">
+                    <div class="project-body">
+                        <p class="project-desc">بوابة رقمية متكاملة مخصصة لطلاب المعاهد المتوسطة للدراسات الإسلامية في ليبيا. يسعى المشروع إلى تيسير العلوم الشرعية وتقريبها للطلاب عبر توفير محتوى منظم ومنهجي يسد ثغرة غياب المصادر الرقمية لهذه الفئة، وينطلق العمل به تزامناً مع بداية الموسم الدراسي الجديد.</p>
+                        <ul class="project-features">
+                            <li>توفير الملخصات الشاملة والحلول النموذجية للمناهج الشرعية.</li>
+                            <li>تأسيس بنك أسئلة وتفاعلات دورية لقياس الفهم وتحفيز الطلبة.</li>
+                            <li>إطلاق البوت الرقمي المساعد تزامناً مع القناة لجمع وترتيب المحتوى تيسيراً للوصول.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <!-- مشروع 2 -->
-            <div class="project-card">
-                <div>
-                    <span class="project-badge">ديني / دعوي</span>
-                    <h2 class="project-title">2. منصة ذو النورين</h2>
-                    <p class="project-desc">مكتبة إسلامية رقمية جامعة (قناة وبوت) تهتم بالقرآن الكريم وعلومه، وتهدف إلى بناء ركيزة دينية متينة للمتابع من خلال توفير مصادر موثوقة في الفقه والعقيدة والرقائق بأسلوب معاصر وعذب.</p>
+            <div class="project-item">
+                <div class="project-header" onclick="toggleProject(this)">
+                    <div class="project-title-block">
+                        <div class="project-number">٢</div>
+                        <div class="project-title-text">منصة ذو النورين الدعوية</div>
+                    </div>
+                    <div class="project-meta">
+                        <span class="time-badge urgent">أغسطس - سبتمبر 2026</span>
+                        <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
                 </div>
-                <ul class="project-features">
-                    <li>تلاوات قرآنية وصوتيات بجودة عالية.</li>
-                    <li>مكتبة للكتب الدينية والفتاوى المعتمدة.</li>
-                    <li>واجهة ذكية للبحث والوصول للمحتوى الدعوي.</li>
-                </ul>
+                <div class="project-content">
+                    <div class="project-body">
+                        <p class="project-desc">مكتبة إسلامية رقمية جامعة (تضم قناة وبوت متطور) تهتم بالقرآن الكريم وعلومه، وتهدف إلى بناء ركيزة دينية متينة للمتابع من خلال توفير مصادر موثوقة في الفقه والعقيدة والرقائق بأسلوب معاصر وعذب، ومقرر تدشينها بين شهري أغسطس ونتمبر من العام الجاري.</p>
+                        <ul class="project-features">
+                            <li>تجميع التلاوات القرآنية والصوتيات العذبة بجودة عالية.</li>
+                            <li>مكتبة جامعة للكتب الدينية والرسائل والفتاوى الفقهية المعتمدة.</li>
+                            <li>تطوير بوت بحث فوري لتسهيل المطالعة والاستماع.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <!-- مشروع 3 -->
-            <div class="project-card">
-                <div>
-                    <span class="project-badge">ثقافي / أدبي</span>
-                    <h2 class="project-title">3. لأكون عربياً</h2>
-                    <p class="project-desc">مبادرة ثقافية لغوية (قناة وبوت) تسعى إلى إحياء فصاحة اللسان العربي، وتعزيز الهوية الثقافية لدى الجيل الصاعد عبر تقديم روائع الأدب، وفنون الخط، واللغة الشاعرة بأسلوب مشوق.</p>
+            <div class="project-item">
+                <div class="project-header" onclick="toggleProject(this)">
+                    <div class="project-title-block">
+                        <div class="project-number">٣</div>
+                        <div class="project-title-text">مبادرة لأكون عربياً الثقافية</div>
+                    </div>
+                    <div class="project-meta">
+                        <span class="time-badge urgent">قريباً بإذن الله</span>
+                        <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
                 </div>
-                <ul class="project-features">
-                    <li>تعليم قواعد اللغة العربية ومبادئ الخط العربي.</li>
-                    <li>مختارات من عيون الشعر والنثر العربي.</li>
-                    <li>إثراء الثقافة العامة بكتب ومقالات أدبية.</li>
-                </ul>
+                <div class="project-content">
+                    <div class="project-body">
+                        <p class="project-desc">مبادرة ثقافية لغوية (قناة وبوت) تسعى إلى إحياء فصاحة اللسان العربي، وتعزيز الهوية الثقافية لدى الجيل الصاعد عبر تقديم روائع الأدب، وفنون الخط، واللغة الشاعرة بأسلوب مشوق يُقرب لغة الضاد إلى القلوب والعقول، والإطلاق قريب جداً.</p>
+                        <ul class="project-features">
+                            <li>أصول وقواعد اللغة العربية بتبسيط معاصر، ومبادئ الخط العربي وتاريخه.</li>
+                            <li>مختارات من عيون الشعر والنثر العربي، وإثراء الثقافة العامة بالكتب الأدبية.</li>
+                            <li>أنشطة تفاعلية لتعزيز الفصاحة واستقامة اللسان.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <!-- مشروع 4 -->
-            <div class="project-card">
-                <div>
-                    <span class="project-badge">معرفي عام</span>
-                    <h2 class="project-title">4. سِفر الخالدين (المكتبة الشاملة)</h2>
-                    <p class="project-desc">منصة معرفية كبرى تهدف إلى بناء بيئة قرائية متميزة. يعتمد المشروع على تنظيم وتصنيف أمهات الكتب والمراجع الحديثة وفقاً للتصنيفات الأكاديمية والعالمية، ليكون المرجع الأول لكل باحث وقارئ.</p>
+            <div class="project-item">
+                <div class="project-header" onclick="toggleProject(this)">
+                    <div class="project-title-block">
+                        <div class="project-number">٤</div>
+                        <div class="project-title-text">منصة سِفر الخالدين المعرفية (المكتبة الشاملة المحدثة)</div>
+                    </div>
+                    <div class="project-meta">
+                        <span class="time-badge">خلال عام 2027</span>
+                        <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
                 </div>
-                <ul class="project-features">
-                    <li>فهرسة ذكية مبنية على الأنظمة العالمية للمكتبات.</li>
-                    <li>قناة تفاعلية تنشر فعاليات قرائية وأنشطة دورية.</li>
-                    <li>بوت بحث سريع ومتقدم في بطون الكتب.</li>
-                </ul>
+                <div class="project-content">
+                    <div class="project-body">
+                        <p class="project-desc">مشروع معرفي ضخم ومستدام يهدف إلى بناء بيئة قرائية وبحثية فريدة. يرتكز المشروع على تنظيم وتصنيف أمهات الكتب والمراجع الحديثة وفقاً للتصنيفات الأكاديمية والعالمية، ليكون الركيزة المعرفية الكبرى، ويستهدف الفريق إطلاقه بحلول عام 2027 إن شاء الله.</p>
+                        <ul class="project-features">
+                            <li>فهرسة علمية ذكية ومصنفة تحاكي كبرى المواقع العالمية للمكتبات.</li>
+                            <li>تأسيس بوت متطور للبحث السريع والدقيق في التصنيفات والكتب المتوفرة.</li>
+                            <li>إطلاق قناة تابعة تُعنى بنشر فعاليات، تحديات، وأنشطة قرائية دورية لتنشيط حركة المطالعة.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <!-- مشروع 5 -->
-            <div class="project-card">
-                <div>
-                    <span class="project-badge">حوارى / فكري</span>
-                    <h2 class="project-title">5. منصة مناظرات فكرية</h2>
-                    <p class="project-desc">مساحة فكرية رصينة تهدف إلى إرساء أدب الحوار ونشر ثقافة الحجة والبرهان. من خلال قناة متخصصة، يُطرح في هذا المشروع قضايا شيقة تفتح آفاق النقاش وتدرب المتابعين على التفكير النقدي.</p>
+            <div class="project-item">
+                <div class="project-header" onclick="toggleProject(this)">
+                    <div class="project-title-block">
+                        <div class="project-number">٥</div>
+                        <div class="project-title-text">منصة المناظرات الفكرية والحوار الرصين</div>
+                    </div>
+                    <div class="project-meta">
+                        <span class="time-badge">قريباً</span>
+                        <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
                 </div>
-                <ul class="project-features">
-                    <li>إدارة مناظرات تفاعلية دورية بين المتابعين.</li>
-                    <li>طرح مواضيع علمية، اجتماعية، وفكرية مشوقة.</li>
-                    <li>تعزيز مهارات الخطابة والدفاع عن الأفكار بالدليل.</li>
-                </ul>
+                <div class="project-content">
+                    <div class="project-body">
+                        <p class="project-desc">مساحة فكرية رصينة تهدف إلى إرساء أدب الحوار ونشر ثقافة الحجة والبرهان. من خلال قناة تفاعلية متخصصة، يُطرح في هذا المشروع قضايا شيقة تفتح آفاق النقاش، وتدرب المتابعين على التفكير النقدي وفنون المحاججة دون تعصب.</p>
+                        <ul class="project-features">
+                            <li>إدارة وتنظيم مناظرات دورية ومنسقة بين المتابعين وأعضاء المنصة.</li>
+                            <li>طرح مواضيع علمية، اجتماعية، وفكرية تثير الشغف والبحث.</li>
+                            <li>صقل مهارات الخطابة والتعبير الفصيح والدفاع عن الأفكار بالدليل والبرهان.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <!-- مشروع 6 -->
-            <div class="project-card">
-                <div>
-                    <span class="project-badge">اجتماعي / علمي</span>
-                    <h2 class="project-title">6. ملتقى النخبة</h2>
-                    <p class="project-desc">بيئة تفاعلية اجتماعية وثقافية تهدف إلى بناء مجتمع واعٍ. يرتكز المشروع على الخصوصية التامة من خلال فصل الفئات، مما يتيح مساحة آمنة ومثمرة للنقاشات العلمية الجادة والأنشطة الترفيهية الهادفة.</p>
+            <div class="project-item">
+                <div class="project-header" onclick="toggleProject(this)">
+                    <div class="project-title-block">
+                        <div class="project-number">٦</div>
+                        <div class="project-title-text">ملتقى النخبة التفاعلي</div>
+                    </div>
+                    <div class="project-meta">
+                        <span class="time-badge">مستقبلي</span>
+                        <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
                 </div>
-                <ul class="project-features">
-                    <li>مجموعتان مستقلتان تماماً: (ملتقى الشباب) & (ملتقى البنات).</li>
-                    <li>نقاشات وحوارات علمية وثقافية بمختلف المجالات.</li>
-                    <li>مسابقات، فعاليات، وأنشطة تفاعلية مستمرة.</li>
-                </ul>
+                <div class="project-content">
+                    <div class="project-body">
+                        <p class="project-desc">بيئة تفاعلية اجتماعية وثقافية تهدف إلى بناء مجتمع شبابي واعٍ ومثقف. يرتكز المشروع على الموثوقية والخصوصية التامة عبر فصل المجموعات، مما يتيح مساحة آمنة ومثمرة للنقاشات العلمية الجادة والأنشطة الترفيهية الهادفة.</p>
+                        <ul class="project-features">
+                            <li>تأسيس مجموعتين منفصلتين تماماً: (ملتقى النخبة للشباب) ومجموعة مستقلة لـ (ملتقى النخبة للبنات).</li>
+                            <li>إقامة حوارات ونقاشات علمية رصينة تغطي مختلف المجالات المعرفية.</li>
+                            <li>تنظيم فعاليات، مسابقات، وأنشطة تفاعلية مستمرة لكسر الجمود وبناء العلاقات الإيجابية.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
             <!-- مشروع 7 -->
-            <div class="project-card">
-                <div>
-                    <span class="project-badge">تثقيفي</span>
-                    <h2 class="project-title">7. مشروع غراس المعرفة</h2>
-                    <p class="project-desc">مشروع معرفي يهدف إلى غربلة وتجميع المعلومات العامة والمهمة التي ترفع من الوعي الثقافي اليومي، وتقديمها في قوالب بصرية ونصية مختصرة يسهل استيعابها وتطبيقها في الحياة العملية.</p>
+            <div class="project-item">
+                <div class="project-header" onclick="toggleProject(this)">
+                    <div class="project-title-block">
+                        <div class="project-number">٧</div>
+                        <div class="project-title-text">مشروع غراس المعرفة والثقافة العامة</div>
+                    </div>
+                    <div class="project-meta">
+                        <span class="time-badge">قريباً</span>
+                        <svg class="icon-arrow" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </div>
                 </div>
-                <ul class="project-features">
-                    <li>تجميع معلومات عامة، طبية، تقنية، وتاريخية موثوقة.</li>
-                    <li>تبسيط المفاهيم المعقدة لغير المتخصصين.</li>
-                    <li>صناعة محتوى مركز يركز على الجودة والنفع الحقيقي.</li>
-                </ul>
+                <div class="project-content">
+                    <div class="project-body">
+                        <p class="project-desc">مشروع معرفي وتثقيفي مميز يهدف إلى غربلة وتجميع المعلومات العامة والمهمة التي ترفع من الوعي الثقافي اليومي، وتقديمها في قوالب بصرية ونصية مركزة، يسهل على المتابع استيعابها وتطبيق نفعها في الحياة العملية اليومية.</p>
+                        <ul class="project-features">
+                            <li>تجميع معلومات عامة، طبية، تقنية، وتاريخية موثوقة ومثبتة علمياً.</li>
+                            <li>تبسيط المفاهيم المعقدة واختصار الأبحاث الطويلة لغير المتخصصين.</li>
+                            <li>صناعة محتوى معرفي يركز على الكيف والجودة والنفع الحقيقي البعيد عن السطحية.</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
 
         </div>
 
         <footer>
-            <p>© 2026 فريق النخبة - كل الحقوق محفوظة. صُنع الشغف لرفعة العلم.</p>
+            <p>© 2026 فريق النخبة - صُنع الشغف لرفعة العلم والمعرفة.</p>
         </footer>
     </div>
 
+    <script>
+        function toggleProject(header) {
+            const currentItem = header.parentElement;
+            const allItems = document.querySelectorAll('.project-item');
+            
+            // إغلاق أي مشروع آخر مفتوح لتركيز القارئ (إذا كنت تريد فتح أكثر من مشروع معاً، احذف حلقة forEach التالية)
+            allItems.forEach(item => {
+                if (item !== currentItem) {
+                    item.classList.remove('active');
+                }
+            });
+
+            // فتح أو إغلاق المشروع الحالي
+            currentItem.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>
